@@ -11,6 +11,17 @@ class Val(Expr):
     def eval(self):
         return self.value
 
+class Binary(Expr):
+    __slots__=['left', 'right']
+    def __init__(self, a, b):
+        if not isinstance(a, Expr):
+            a = Val(a)
+        if not isinstance(b, Expr):
+            b = Val(b)
+        self.left = a
+        self.right = b
+    def eval(self):
+        return self.left.eval() + self.right.eval()
 
 v = Val(1)
 print(v)
@@ -38,6 +49,7 @@ class Add(Expr):
         self.right = b
     def eval(self):
         return self.left.eval() + self.right.eval()
+
 
 
 e = Add(1,Add(1,2))
