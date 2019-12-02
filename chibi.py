@@ -3,10 +3,10 @@ import pegpy
 peg = pegpy.grammar('chibi.tpeg')
 parser = pegpy.generate(peg)
 
-tree = parser('1+2*3')
-print(repr(tree))
-tree = parser('1@2*3')
-print(repr(tree))
+# tree = parser('1+2*3')
+# print(repr(tree))
+# tree = parser('1@2*3')
+# print(repr(tree))
 
 class Expr(object):
     @classmethod
@@ -80,23 +80,21 @@ class Assign(Expr):
         return env[self.name]
 
 
+# print('少しテスト')
 
+# env = {}
+# e = Assign('x', Val(1))
+# print(e.eval(env))
+# e = Assign('x', Add(Var('x'), Val(2)))
+# print(e.eval(env))
 
-print('少しテスト')
+# '''try:
+#     e = Var('x')
+#     print(e.eval({}))
+# except NameError:
+#     print('未定義の変数です')'''
 
-env = {}
-e = Assign('x', Val(1))
-print(e.eval(env))
-e = Assing('x', Add(Var('x'), Val(2)))
-print(e.eval(env))
-
-try:
-    e = Var('x')
-    print(e.eval({}))
-except NameError:
-    print('未定義の変数です')
-
-print('テスト終わり')
+# print('テスト終わり')
 
 def conv(tree):
     if tree == 'Block':
@@ -111,23 +109,32 @@ def conv(tree):
         return Mul(conv(tree[0]), conv(tree[1]))
     if tree == 'Div':
         return Div(conv(tree[0]), conv(tree[1]))
+    if tree == 'Mod':
+        return Mod(conv(tree[0]), conv(tree[1]))
+    if tree == 'Var':
+        return Var(str(tree))
+    if tree == 'LetDecl':
+        return Assign(str(tree[0]), conv(tree[1]))
     print('@TODO', tree.tag)
     return Val(str(tree))
-def run(src: str):
+
+def run(src: str, env: dict):
     tree = parser(src)
     if tree.isError():
         print(repr(tree))
     else:
         e = conv(tree)
-        print(repr(e))
-        print(e.eval({}))
+        print('env', env)
+        print(e.eval(env))
+
 def main():
     try:
+        env = {}
         while True:
             s = input('>>> ')
             if s == '':
                 break
-            run(s)
+            run(s, env)
     except EOFError:
         return
 if __name__ == '__main__':
