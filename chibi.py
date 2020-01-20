@@ -143,12 +143,14 @@ class If(Expr):
         else:
             return self.else_.eval(env)
 
+
 e = Block(
     Assign('x', Val(1)),
     Assign('y', Val(2)),
     If(Gt(Var('x'), Var('y'), Var('x'), Var('y'))
     )
     assert e.eval({}) == 2
+
 
 
 # print('少しテスト')
@@ -223,5 +225,6 @@ def main():
             run(s, env)
     except EOFError:
         return
+
 if __name__ == '__main__':
     main()
